@@ -12,10 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Dogstagram">
         <activity android:name=".BaseActivity"
-            android:screenOrinetation="potrait">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

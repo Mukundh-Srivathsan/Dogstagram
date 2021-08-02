@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecylerViewAdapter.
     private static final String TAG = "RecylerViewAdapter";
 
     private Context context;
-    private ArrayList<String> breedNames = new ArrayList<>();
+    private ArrayList<Items> breedNames = new ArrayList<>();
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
@@ -34,9 +33,9 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecylerViewAdapter.
     }
 
 
-    public RecylerViewAdapter(ArrayList<String> breedNames) {
+    public RecylerViewAdapter(ArrayList<Items> breedNames) {
         this.breedNames = breedNames;
-        this.context = context;
+        //this.context = context;
     }
 
     @Override
@@ -53,7 +52,9 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecylerViewAdapter.
     public void onBindViewHolder( RecylerViewAdapter.ViewHolder holder, int position) {
         Log.d(TAG, "onBindViewHolder: called");
 
-        holder.breed.setText(breedNames.get(position));
+        Items items = breedNames.get(position);
+
+        holder.breed.setText(items.getBreed());
 
     }
 

@@ -2,10 +2,14 @@ package com.example.dogstagram;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Post {
+public class Items {
 
-    @SerializedName("attach_breed")
+    @SerializedName("name")
     private String breed;
+
+    public Items(String mBreed) {
+        breed = mBreed;
+    }
 
     public String getBreed() {
         return breed;
