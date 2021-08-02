@@ -1,0 +1,2 @@
+rootProject.name = "Dogstagram"
+include ':app'
