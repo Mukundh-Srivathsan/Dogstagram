@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/startFragment">
+
+    <fragment
+        android:id="@+id/breedFragment"
+        android:name="com.example.dogstagram.fragments.BreedFragment"
+        android:label="fragment_breed"
+        tools:layout="@layout/fragment_breed" />
+    <fragment
+        android:id="@+id/startFragment"
+        android:name="com.example.dogstagram.fragments.StartFragment"
+        android:label="fragment_start"
+        tools:layout="@layout/fragment_start" >
+        <action
+            android:id="@+id/action_startFragment_to_breedFragment"
+            app:destination="@id/breedFragment" />
+    </fragment>
+</navigation>
