@@ -18,5 +18,13 @@
         <action
             android:id="@+id/action_startFragment_to_breedFragment"
             app:destination="@id/breedFragment" />
+        <action
+            android:id="@+id/action_startFragment_to_imageSearchFragment"
+            app:destination="@id/imageSearchFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/imageSearchFragment"
+        android:name="com.example.dogstagram.fragments.ImageSearchFragment"
+        android:label="fragment_image_search"
+        tools:layout="@layout/fragment_image_search" />
 </navigation>

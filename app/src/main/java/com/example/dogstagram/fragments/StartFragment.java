@@ -33,6 +33,7 @@ public class StartFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         Button breedButton = view.findViewById(R.id.breedBtn);
+        Button imgSearchButton = view.findViewById(R.id.imgSearchBtn);
 
         NavController navControler = Navigation.findNavController(view);
 
@@ -40,6 +41,13 @@ public class StartFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 navControler.navigate(R.id.action_startFragment_to_breedFragment);
+            }
+        });
+
+        imgSearchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navControler.navigate(R.id.action_startFragment_to_imageSearchFragment);
             }
         });
 

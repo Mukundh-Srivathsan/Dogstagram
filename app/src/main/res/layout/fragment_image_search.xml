@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#232323"
+    tools:context=".fragments.ImageSearchFragment">
+
+    <ImageView
+        android:id="@+id/dogImage"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="-150dp"
+        android:src="#979797" />
+    <Button
+        android:id="@+id/browse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="100dp"
+        android:background="#AEAEAE"
+        android:fontFamily="@font/coustard"
+        android:text="Browse"
+        android:textSize="15dp"
+        app:backgroundTint="@null" />
+
+    <Button
+        android:id="@+id/upload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="200dp"
+        android:background="#AEAEAE"
+        android:fontFamily="@font/coustard"
+        android:text="Upload"
+        android:textSize="15dp"
+        app:backgroundTint="@null" />
+
+</FrameLayout>
