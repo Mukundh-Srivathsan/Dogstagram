@@ -1,4 +1,4 @@
-package com.example.dogstagram.json_classes;
+package com.example.dogstagram.models;
 
 import com.google.gson.annotations.SerializedName;
 

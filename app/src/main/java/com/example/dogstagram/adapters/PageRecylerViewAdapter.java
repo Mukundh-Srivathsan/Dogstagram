@@ -15,10 +15,10 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.dogstagram.json_classes.BreedName;
-import com.example.dogstagram.json_classes.ImageURL;
 import com.example.dogstagram.JsonPlaceFolderAPI;
 import com.example.dogstagram.R;
+import com.example.dogstagram.models.BreedName;
+import com.example.dogstagram.models.ImageURL;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -96,7 +96,6 @@ public class PageRecylerViewAdapter extends RecyclerView.Adapter<PageRecylerView
             ImageURL imgUrl = imgUrls.get(position);
             Picasso.with(holder.image.getContext())
                     .load(Uri.parse(imgUrl.getImgUrl()))
-                    .resize(140, 140)
                     .into(holder.image);
         }
 
@@ -133,7 +132,6 @@ public class PageRecylerViewAdapter extends RecyclerView.Adapter<PageRecylerView
 
         Picasso.with(image.getContext())
                 .load(Uri.parse(imgUrls.get(pos).getImgUrl()))
-                .resize(200, 200)
                 .into(image);
 
         BreedName item = breedNames.get(pos);

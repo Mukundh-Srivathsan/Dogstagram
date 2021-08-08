@@ -21,11 +21,15 @@ import android.widget.Toast;
 
 import com.example.dogstagram.JsonPlaceFolderAPI;
 import com.example.dogstagram.R;
-import com.example.dogstagram.json_classes.UploadImg;
+import com.example.dogstagram.models.UploadImg;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -100,25 +104,33 @@ public class ImageSearchFragment extends Fragment {
             public void onClick(View v) {
                 Log.d(TAG, "Upload Clicked");
 
-                File file = new File(imgURI);
+                File f = new File(imgURI);
 
-                UploadImg data = new UploadImg(file);
+                //UploadImg data = new UploadImg(file);
 
-                Call<UploadImg> call = jsonPlaceFolderAPI.uploadImg(data);
+                RequestBody filePart = RequestBody.create(MediaType.parse("image/*"), f);
 
-                call.enqueue(new Callback<UploadImg>() {
+                MultipartBody.Part file = MultipartBody.Part.createFormData("photo", f.getName(), filePart);
+
+                Call<RequestBody> call = jsonPlaceFolderAPI.uploadImg(file);
+
+                call.enqueue(new Callback<RequestBody>() {
                     @Override
-                    public void onResponse(Call<UploadImg> call, Response<UploadImg> response) {
-                        if(!response.isSuccessful())
+                    public void onResponse(Call<RequestBody> call, Response<RequestBody> response) {
+                        if(!response.isSuccessful()) {
+                            Log.d(TAG, "Upload Unsuccessful " + response.message());
                             return;
+                        }
 
-                        Toast.makeText(uploadBtn.getContext(),
-                                valueOf(response.isSuccessful()), Toast.LENGTH_SHORT);
+                        Log.d(TAG, "Upload Successful");
+
+                        Toast.makeText(v.getContext(),
+                                "YAYYY!!", Toast.LENGTH_SHORT);
                     }
 
                     @Override
-                    public void onFailure(Call<UploadImg> call, Throwable t) {
-
+                    public void onFailure(Call<RequestBody> call, Throwable t) {
+                        Log.d(TAG, "Upload Failed");
                     }
                 });
 

@@ -14,8 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.dogstagram.json_classes.BreedName;
-import com.example.dogstagram.json_classes.ImageURL;
+import com.example.dogstagram.models.BreedName;
+import com.example.dogstagram.models.ImageURL;
 import com.example.dogstagram.JsonPlaceFolderAPI;
 import com.example.dogstagram.R;
 import com.example.dogstagram.adapters.PageRecylerViewAdapter;
