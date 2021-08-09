@@ -3,6 +3,8 @@ package com.example.dogstagram.fragments;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +28,9 @@ import com.example.dogstagram.models.UploadImg;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import okhttp3.MediaType;
@@ -86,15 +92,14 @@ public class ImageSearchFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "Browse Clicked");
-                if(ActivityCompat.checkSelfPermission(getActivity(),
-                        Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-                {
+                if ((ActivityCompat.checkSelfPermission(getActivity(),
+                        Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
                     Log.d(TAG, "onClick: Requesting Permission");
                     requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 2000);
-                }
-                else {
+                } else {
                     Log.d(TAG, "onClick: Starting Gallery");
                     openGallery();
+                    Log.d(TAG, "Smtg : " + imgURI);
                 }
             }
         });
@@ -102,40 +107,45 @@ public class ImageSearchFragment extends Fragment {
         uploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "Upload Clicked");
+                if ((ActivityCompat.checkSelfPermission(getActivity(),
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
 
-                File f = new File(imgURI);
+                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                } else {
+                    Log.d(TAG, "Upload Clicked");
 
-                //UploadImg data = new UploadImg(file);
+                    File f = saveBitmap();
 
-                RequestBody filePart = RequestBody.create(MediaType.parse("image/*"), f);
+                    RequestBody filePart = RequestBody.create(MediaType.parse("image/png"), f);
 
-                MultipartBody.Part file = MultipartBody.Part.createFormData("photo", f.getName(), filePart);
+                    MultipartBody.Part file = MultipartBody.Part.createFormData("file", f.getName(), filePart);
 
-                Call<RequestBody> call = jsonPlaceFolderAPI.uploadImg(file);
+                    Call<RequestBody> call = jsonPlaceFolderAPI.uploadImg(file);
 
-                call.enqueue(new Callback<RequestBody>() {
-                    @Override
-                    public void onResponse(Call<RequestBody> call, Response<RequestBody> response) {
-                        if(!response.isSuccessful()) {
-                            Log.d(TAG, "Upload Unsuccessful " + response.message());
-                            return;
+                    call.enqueue(new Callback<RequestBody>() {
+                        @Override
+                        public void onResponse(Call<RequestBody> call, Response<RequestBody> response) {
+                            if (!response.isSuccessful()) {
+                                Log.d(TAG, "Upload Unsuccessful " + response.message());
+                                return;
+                            }
+
+                            Log.d(TAG, "Upload Successful");
+
+                            Toast.makeText(v.getContext(),
+                                    "YAYYY!!", Toast.LENGTH_SHORT);
                         }
 
-                        Log.d(TAG, "Upload Successful");
-
-                        Toast.makeText(v.getContext(),
-                                "YAYYY!!", Toast.LENGTH_SHORT);
-                    }
-
-                    @Override
-                    public void onFailure(Call<RequestBody> call, Throwable t) {
-                        Log.d(TAG, "Upload Failed");
-                    }
-                });
-
+                        @Override
+                        public void onFailure(Call<RequestBody> call, Throwable t) {
+                            Log.d(TAG, "Upload Failed");
+                        }
+                    });
+                }
             }
+
         });
+
     }
 
     private void openGallery() {
@@ -146,15 +156,39 @@ public class ImageSearchFragment extends Fragment {
         }
     }
 
+    private File saveBitmap() {
+        imageView.invalidate();
+        BitmapDrawable bitmapDrawable = (BitmapDrawable) imageView.getDrawable();
+        Bitmap bitmap = bitmapDrawable.getBitmap();
+
+        String fileName = String.format("%d.png", System.currentTimeMillis());
+        File file = Environment.getExternalStorageDirectory();
+        File savebitmap = new File(file.getAbsolutePath() + File.separator + fileName);
+
+        try {
+            //savebitmap.createNewFile();
+            FileOutputStream fos = new FileOutputStream(savebitmap);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return savebitmap;
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         //super method removed
         if (resultCode == RESULT_OK && requestCode == PICK_IMAGE) {
-                imgURI = data.getData().toString();
-                Picasso.with(imageView.getContext())
-                        .load(imgURI)
-                        .resize(300,300)
-                        .into(imageView);
+            imgURI = data.getData().toString();
+            Picasso.with(imageView.getContext())
+                    .load(imgURI)
+                    .resize(300, 300)
+                    .into(imageView);
         }
     }
 }

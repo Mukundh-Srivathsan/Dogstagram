@@ -3,6 +3,7 @@ package com.example.dogstagram;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.animation.Animation;
@@ -21,12 +22,17 @@ public class SplashScreen extends AppCompatActivity {
 
         paw.setAnimation(anim);
 
+        MediaPlayer mediaPlayer = MediaPlayer.create(SplashScreen.this, R.raw.dogwoof);
+        mediaPlayer.start();
+
         Handler handler = new Handler();
         Intent intent = new Intent(this, BaseActivity.class);
 
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                mediaPlayer.stop();
+                mediaPlayer.release();
                 startActivity(intent);
                 finish();
             }

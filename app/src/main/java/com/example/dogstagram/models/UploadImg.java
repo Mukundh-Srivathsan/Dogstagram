@@ -5,14 +5,14 @@ import com.google.gson.annotations.SerializedName;
 import java.io.File;
 
 public class UploadImg {
-    @SerializedName("file")
-    private File file;
+    @SerializedName("id")
+    private String id;
 
-    public UploadImg(File file) {
-        this.file = file;
+    public UploadImg(String id) {
+        this.id = id;
     }
 
-    public File getFile() {
-        return file;
+    public String getId() {
+        return id;
     }
 }
