@@ -26,5 +26,18 @@
         android:id="@+id/imageSearchFragment"
         android:name="com.example.dogstagram.fragments.ImageSearchFragment"
         android:label="fragment_image_search"
-        tools:layout="@layout/fragment_image_search" />
+        tools:layout="@layout/fragment_image_search" >
+        <action
+            android:id="@+id/action_imageSearchFragment_to_imageAnalysisFragment"
+            app:destination="@id/imageAnalysisFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/imageAnalysisFragment"
+        android:name="com.example.dogstagram.fragments.ImageAnalysisFragment"
+        android:label="fragment_image_analysis"
+        tools:layout="@layout/fragment_image_analysis" >
+        <argument
+            android:name="imageID"
+            app:argType="string" />
+    </fragment>
 </navigation>

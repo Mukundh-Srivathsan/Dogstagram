@@ -54,7 +54,7 @@ public class PageRecylerViewAdapter extends RecyclerView.Adapter<PageRecylerView
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.layout_list1, parent, false);
+                .inflate(R.layout.layout_list, parent, false);
 
         ViewHolder viewHolder = new ViewHolder(view);
 

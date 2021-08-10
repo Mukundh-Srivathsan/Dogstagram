@@ -76,8 +76,6 @@ public class BreedFragment extends Fragment{
         getBreedList();
         adapter.notifyDataSetChanged();
 
-
-
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
     }

@@ -1,17 +1,15 @@
 package com.example.dogstagram.fragments;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -19,11 +17,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.dogstagram.JsonPlaceFolderAPI;
 import com.example.dogstagram.R;
+import com.example.dogstagram.adapters.PageRecylerViewAdapter;
+import com.example.dogstagram.models.BreedName;
+import com.example.dogstagram.models.ImageAnalysis;
+import com.example.dogstagram.models.Labels;
 import com.example.dogstagram.models.UploadImg;
 import com.squareup.picasso.Picasso;
 
@@ -31,6 +44,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.MediaType;
@@ -43,13 +57,13 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.app.Activity.RESULT_OK;
-import static java.lang.String.valueOf;
 
 public class ImageSearchFragment extends Fragment {
 
     private static final int PICK_IMAGE = 100;
 
     String imgURI;
+    String imageid;
     ImageView imageView;
 
     JsonPlaceFolderAPI jsonPlaceFolderAPI;
@@ -107,43 +121,8 @@ public class ImageSearchFragment extends Fragment {
         uploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if ((ActivityCompat.checkSelfPermission(getActivity(),
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
-
-                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                } else {
-                    Log.d(TAG, "Upload Clicked");
-
-                    File f = saveBitmap();
-
-                    RequestBody filePart = RequestBody.create(MediaType.parse("image/png"), f);
-
-                    MultipartBody.Part file = MultipartBody.Part.createFormData("file", f.getName(), filePart);
-
-                    Call<RequestBody> call = jsonPlaceFolderAPI.uploadImg(file);
-
-                    call.enqueue(new Callback<RequestBody>() {
-                        @Override
-                        public void onResponse(Call<RequestBody> call, Response<RequestBody> response) {
-                            if (!response.isSuccessful()) {
-                                Log.d(TAG, "Upload Unsuccessful " + response.message());
-                                return;
-                            }
-
-                            Log.d(TAG, "Upload Successful");
-
-                            Toast.makeText(v.getContext(),
-                                    "YAYYY!!", Toast.LENGTH_SHORT);
-                        }
-
-                        @Override
-                        public void onFailure(Call<RequestBody> call, Throwable t) {
-                            Log.d(TAG, "Upload Failed");
-                        }
-                    });
-                }
+                uploadImg(v, view);
             }
-
         });
 
     }
@@ -178,6 +157,56 @@ public class ImageSearchFragment extends Fragment {
         }
 
         return savebitmap;
+    }
+
+    private void uploadImg(View v, View view)
+    {
+        if ((ActivityCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
+
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        } else {
+            Log.d(TAG, "Upload Clicked");
+
+            File f = saveBitmap();
+
+            RequestBody filePart = RequestBody.create(MediaType.parse("image/png"), f);
+
+            MultipartBody.Part file = MultipartBody.Part.createFormData("file", f.getName(), filePart);
+
+            Call<UploadImg> call = jsonPlaceFolderAPI.uploadImg(file);
+
+            call.enqueue(new Callback<UploadImg>() {
+                @Override
+                public void onResponse(Call<UploadImg> call, Response<UploadImg> response) {
+                    if (!response.isSuccessful()) {
+                        Log.d(TAG, "Upload Unsuccessful " + response.message());
+                        Toast.makeText(requireContext(),
+                                "NOOOO!!!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    Log.d(TAG, "Upload Successful");
+
+                    UploadImg item = response.body();
+
+                    imageid = item.getId();
+
+                    NavController navController = Navigation.findNavController(view);
+
+                    ImageSearchFragmentDirections.ActionImageSearchFragmentToImageAnalysisFragment action =
+                            ImageSearchFragmentDirections.actionImageSearchFragmentToImageAnalysisFragment(imageid);
+                    //action.setImageID(imageid);
+
+                    navController.navigate(action);
+                }
+
+                @Override
+                public void onFailure(Call<UploadImg> call, Throwable t) {
+                    Log.d(TAG, "Upload Failed" + t.getMessage());
+                }
+            });
+        }
     }
 
     @Override
