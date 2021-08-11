@@ -9,27 +9,38 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dogstagram.JsonPlaceFolderAPI;
 import com.example.dogstagram.R;
+import com.example.dogstagram.database.AppDatabase;
+import com.example.dogstagram.database.Data;
 import com.example.dogstagram.models.BreedName;
 import com.example.dogstagram.models.ImageURL;
+import com.example.dogstagram.models.Vote;
+import com.example.dogstagram.models.VoteData;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
 
-public class PageRecylerViewAdapter extends RecyclerView.Adapter<PageRecylerViewAdapter.ViewHolder> {
+public class BreedNamesAdapter extends RecyclerView.Adapter<BreedNamesAdapter.ViewHolder> {
 
     private static final String TAG = "RecylerViewAdapter";
 
@@ -42,8 +53,8 @@ public class PageRecylerViewAdapter extends RecyclerView.Adapter<PageRecylerView
 
     JsonPlaceFolderAPI jsonPlaceFolderAPI;
 
-    public PageRecylerViewAdapter(Context context, ArrayList<BreedName> breedNames,
-                                  ArrayList<ImageURL> imgUrls, ArrayList<BreedName> units) {
+    public BreedNamesAdapter(Context context, ArrayList<BreedName> breedNames,
+                             ArrayList<ImageURL> imgUrls, ArrayList<BreedName> units) {
         this.breedNames = breedNames;
         this.imgUrls = imgUrls;
         this.context = context;
@@ -84,7 +95,7 @@ public class PageRecylerViewAdapter extends RecyclerView.Adapter<PageRecylerView
     }
 
     @Override
-    public void onBindViewHolder(PageRecylerViewAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(BreedNamesAdapter.ViewHolder holder, int position) {
         Log.d(TAG, "onBindViewHolder: called");
 
         BreedName breedName = breedNames.get(position);
@@ -110,29 +121,29 @@ public class PageRecylerViewAdapter extends RecyclerView.Adapter<PageRecylerView
         return breedNames.size();
     }
 
-    public void setDialoge(int pos)
+    private void setDialoge(int pos)
     {
-        TextView dialogName = dispItem.findViewById(R.id.name);
-
-        TextView dialogOriginTitle = dispItem.findViewById(R.id.origin);
-        TextView dialogOrigin = dispItem.findViewById(R.id.orignValue);
-
-        TextView dialogLifeTitle = dispItem.findViewById(R.id.lifeSpan);
-        TextView dialogLifeSpan = dispItem.findViewById(R.id.lifeSpanValue);
-
-        TextView dialogWeightTitle = dispItem.findViewById(R.id.weight);
-        TextView dialogWeight = dispItem.findViewById(R.id.weightValue);
-
-        TextView dialogHeightTitle = dispItem.findViewById(R.id.height);
-        TextView dialogHeight = dispItem.findViewById(R.id.heightValue);
-
-        TextView dialogtemperment = dispItem.findViewById(R.id.tempermentValues);
-
         ImageView image = dispItem.findViewById(R.id.image);
 
         Picasso.with(image.getContext())
                 .load(Uri.parse(imgUrls.get(pos).getImgUrl()))
                 .into(image);
+
+        TextView dialogName = dispItem.findViewById(R.id.name);
+
+        TextView dialogOrigin = dispItem.findViewById(R.id.orignValue);
+
+        TextView dialogLifeSpan = dispItem.findViewById(R.id.lifeSpanValue);
+
+        TextView dialogWeight = dispItem.findViewById(R.id.weightValue);
+
+        TextView dialogHeight = dispItem.findViewById(R.id.heightValue);
+
+        TextView dialogtemperment = dispItem.findViewById(R.id.tempermentValues);
+
+        Button upVote = dispItem.findViewById(R.id.upVote);
+
+        Button downVote = dispItem.findViewById(R.id.downVote);
 
         BreedName item = breedNames.get(pos);
 
@@ -150,6 +161,87 @@ public class PageRecylerViewAdapter extends RecyclerView.Adapter<PageRecylerView
         dialogHeight.setText(units.get(pos).getHeight().get_Height() + " cm");
 
         dialogtemperment.setText(item.getTemperament());
+
+        upVote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "Up Vote Clicked");
+                vote(1,pos);
+                addFav(pos);
+            }
+        });
+
+        downVote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "Down Vote Clicked");
+                vote(0, pos);
+            }
+        });
+    }
+
+    private void vote(int i, int pos)
+    {
+        RequestBody image_idPart = RequestBody.create(MultipartBody.FORM, imgUrls.get(pos).getImgUrl());
+        RequestBody valuePart = RequestBody.create(MultipartBody.FORM, valueOf(i));
+
+        //Call<Vote> call = jsonPlaceFolderAPI.addVote(image_idPart, valuePart);
+        int start = imgUrls.get(pos).getImgUrl().lastIndexOf('/')+1;
+        int end = imgUrls.get(pos).getImgUrl().lastIndexOf('.');
+
+        String imgID = imgUrls.get(pos).getImgUrl().substring(start, end);
+
+        VoteData voteData = new VoteData(imgID, valueOf(i));
+
+        Call<Vote> call = jsonPlaceFolderAPI.addVote(voteData);
+
+        call.enqueue(new Callback<Vote>() {
+            @Override
+            public void onResponse(Call<Vote> call, Response<Vote> response) {
+                if(!response.isSuccessful())
+                {
+                    Log.d(TAG, "Vote Unsuccessful");
+                    return;
+                }
+
+                Log.d(TAG, "Vote Successful");
+
+                Toast.makeText(context, "Done: " + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onFailure(Call<Vote> call, Throwable t) {
+                Log.d(TAG, "Vote failed");
+            }
+        });
+    }
+
+    private void addFav(int pos)
+    {
+        Log.d(TAG, "addFav: Started");
+        
+        AppDatabase appDatabase = AppDatabase.getINSTANCE(context);
+
+        Data data = new Data();
+
+        BreedName item = breedNames.get(pos);
+
+        data.breed = item.getBreed();
+
+        data.lifeSpan = item.getLifeSpan();
+
+        data.origin = item.getOrigin();
+
+        data.temperament = item.getTemperament();
+
+        data.imageURL = imgUrls.get(pos).getImgUrl();
+
+        data.height = units.get(pos).getHeight().get_Height();
+
+        data.weight = units.get(pos).getWeight().get_Weight();
+
+        appDatabase.dataDao().insertData(data);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -158,7 +250,6 @@ public class PageRecylerViewAdapter extends RecyclerView.Adapter<PageRecylerView
         TextView breed;
         TextView id;
         ImageView image;
-
 
         public ViewHolder(View itemView) {
             super(itemView);

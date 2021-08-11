@@ -4,12 +4,16 @@ import com.example.dogstagram.models.BreedName;
 import com.example.dogstagram.models.ImageAnalysis;
 import com.example.dogstagram.models.ImageURL;
 import com.example.dogstagram.models.UploadImg;
+import com.example.dogstagram.models.Vote;
+import com.example.dogstagram.models.VoteData;
 
+import java.util.Calendar;
 import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
@@ -36,6 +40,9 @@ public interface JsonPlaceFolderAPI {
     Call<UploadImg> uploadImg(@Part MultipartBody.Part photo);
 
 
-
+    //@Multipart
+    @POST("votes")
+    @Headers("x-api-key:6c94689e-0a22-4664-8127-6dc32130b4ae")
+    Call<Vote> addVote(@Body VoteData voteData);
 
 }

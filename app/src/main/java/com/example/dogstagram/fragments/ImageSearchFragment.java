@@ -1,14 +1,10 @@
 package com.example.dogstagram.fragments;
 
 import android.Manifest;
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -17,10 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,14 +22,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.dogstagram.JsonPlaceFolderAPI;
 import com.example.dogstagram.R;
-import com.example.dogstagram.adapters.PageRecylerViewAdapter;
-import com.example.dogstagram.models.BreedName;
-import com.example.dogstagram.models.ImageAnalysis;
-import com.example.dogstagram.models.Labels;
 import com.example.dogstagram.models.UploadImg;
 import com.squareup.picasso.Picasso;
 
@@ -44,8 +32,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -67,6 +53,8 @@ public class ImageSearchFragment extends Fragment {
     ImageView imageView;
 
     JsonPlaceFolderAPI jsonPlaceFolderAPI;
+
+    boolean isUploadClicked = false;
 
     private static final String TAG = "ImageSearchFragment";
 
@@ -113,7 +101,6 @@ public class ImageSearchFragment extends Fragment {
                 } else {
                     Log.d(TAG, "onClick: Starting Gallery");
                     openGallery();
-                    Log.d(TAG, "Smtg : " + imgURI);
                 }
             }
         });
@@ -121,7 +108,20 @@ public class ImageSearchFragment extends Fragment {
         uploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                uploadImg(v, view);
+                if(!isUploadClicked) {
+                    try {
+                        BitmapDrawable bitmapDrawable = (BitmapDrawable) imageView.getDrawable();
+                        uploadImg(v, view);
+                        Toast.makeText(getActivity(), "Please wait", Toast.LENGTH_SHORT).show();
+                        isUploadClicked=true;
+                    } catch (ClassCastException e) {
+                        Toast.makeText(getActivity(), "Please Upload an Image", Toast.LENGTH_SHORT).show();
+                    }
+                }else
+                {
+                    Toast.makeText(getActivity(), "Please wait", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 
@@ -182,7 +182,7 @@ public class ImageSearchFragment extends Fragment {
                     if (!response.isSuccessful()) {
                         Log.d(TAG, "Upload Unsuccessful " + response.message());
                         Toast.makeText(requireContext(),
-                                "NOOOO!!!", Toast.LENGTH_SHORT).show();
+                                "Upload a valid Image", Toast.LENGTH_SHORT).show();
                         return;
                     }
 

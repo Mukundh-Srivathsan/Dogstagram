@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import com.example.dogstagram.JsonPlaceFolderAPI;
 import com.example.dogstagram.R;
 import com.example.dogstagram.adapters.AnalysisAdapter;
-import com.example.dogstagram.adapters.PageRecylerViewAdapter;
 import com.example.dogstagram.models.ImageAnalysis;
 import com.example.dogstagram.models.Labels;
 

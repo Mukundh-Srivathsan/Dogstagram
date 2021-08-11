@@ -18,7 +18,7 @@ import com.example.dogstagram.models.BreedName;
 import com.example.dogstagram.models.ImageURL;
 import com.example.dogstagram.JsonPlaceFolderAPI;
 import com.example.dogstagram.R;
-import com.example.dogstagram.adapters.PageRecylerViewAdapter;
+import com.example.dogstagram.adapters.BreedNamesAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class BreedFragment extends Fragment{
 
     private RecyclerView recyclerView;
-    private PageRecylerViewAdapter adapter;
+    private BreedNamesAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
 
     private ArrayList<BreedName> breedName = new ArrayList<>();
@@ -71,7 +71,7 @@ public class BreedFragment extends Fragment{
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(view.getContext());
-        adapter = new PageRecylerViewAdapter(this.getContext(), breedName, imgUrl, units);
+        adapter = new BreedNamesAdapter(this.getActivity(), breedName, imgUrl, units);
 
         getBreedList();
         adapter.notifyDataSetChanged();

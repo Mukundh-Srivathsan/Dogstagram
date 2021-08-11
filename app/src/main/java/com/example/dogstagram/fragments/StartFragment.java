@@ -34,6 +34,7 @@ public class StartFragment extends Fragment {
 
         Button breedButton = view.findViewById(R.id.breedBtn);
         Button imgSearchButton = view.findViewById(R.id.imgSearchBtn);
+        Button favouritesButton = view.findViewById(R.id.favouritesBtn);
 
         NavController navControler = Navigation.findNavController(view);
 
@@ -50,6 +51,15 @@ public class StartFragment extends Fragment {
                 navControler.navigate(R.id.action_startFragment_to_imageSearchFragment);
             }
         });
+
+        favouritesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navControler.navigate(R.id.action_startFragment_to_favouritesFragment);
+            }
+        });
+
+
 
     }
 }

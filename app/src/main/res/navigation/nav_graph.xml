@@ -21,6 +21,9 @@
         <action
             android:id="@+id/action_startFragment_to_imageSearchFragment"
             app:destination="@id/imageSearchFragment" />
+        <action
+            android:id="@+id/action_startFragment_to_favouritesFragment"
+            app:destination="@id/favouritesFragment" />
     </fragment>
     <fragment
         android:id="@+id/imageSearchFragment"
@@ -40,4 +43,9 @@
             android:name="imageID"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/favouritesFragment"
+        android:name="com.example.dogstagram.fragments.FavouritesFragment"
+        android:label="fragment_favourites"
+        tools:layout="@layout/fragment_favourites" />
 </navigation>

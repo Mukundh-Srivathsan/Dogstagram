@@ -9,7 +9,7 @@
 
     <Button
         android:id="@+id/breedBtn"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="-100dp"
@@ -22,8 +22,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="100dp"
         android:background="@android:color/holo_blue_bright"
         android:text="Search Image"
+        app:backgroundTint="@null" />
+
+    <Button
+        android:id="@+id/favouritesBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="100dp"
+        android:background="@android:color/holo_blue_bright"
+        android:text="Favourites"
         app:backgroundTint="@null" />
 </FrameLayout>

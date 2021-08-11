@@ -50,7 +50,7 @@ public class AnalysisAdapter extends RecyclerView.Adapter<AnalysisAdapter.ViewHo
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.layout_list, parent, false);
+                .inflate(R.layout.layout_analysis, parent, false);
 
         ViewHolder viewHolder = new ViewHolder(view);
 
@@ -71,7 +71,7 @@ public class AnalysisAdapter extends RecyclerView.Adapter<AnalysisAdapter.ViewHo
 
         if(holder != null) {
             holder.name.setText(label.getName());
-            holder.match.setText(label.getCofidence());
+            holder.match.setText(label.getCofidence().substring(0,6));
             holder.id.setText(valueOf(position + 1));
         }
     }
