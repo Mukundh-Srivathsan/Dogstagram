@@ -1,5 +1,6 @@
 package com.example.dogstagram.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,14 +12,25 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.SearchView;
 
+import com.example.dogstagram.SearchActivity;
 import com.example.dogstagram.models.BreedName;
 import com.example.dogstagram.models.ImageURL;
 import com.example.dogstagram.JsonPlaceFolderAPI;
 import com.example.dogstagram.R;
 import com.example.dogstagram.adapters.BreedNamesAdapter;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +40,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static android.content.ContentValues.TAG;
 
 public class BreedFragment extends Fragment{
 
@@ -41,10 +55,10 @@ public class BreedFragment extends Fragment{
 
     private JsonPlaceFolderAPI jsonPlaceFolderAPI;
 
-    private int i=0;
-    int[] arr;
+    private int page = 0;
+    final private int LIMIT = 5;
 
-    NavController navController;
+    private boolean isLastPage = false;
 
     public BreedFragment() {
         // Required empty public constructor
@@ -61,6 +75,7 @@ public class BreedFragment extends Fragment{
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://api.thedogapi.com/v1/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -74,15 +89,57 @@ public class BreedFragment extends Fragment{
         adapter = new BreedNamesAdapter(this.getActivity(), breedName, imgUrl, units);
 
         getBreedList();
+
         adapter.notifyDataSetChanged();
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+
+        EditText searchBar = view.findViewById(R.id.searchbar);
+        ImageButton searchBtn = view.findViewById(R.id.searchbtn);
+
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "Query Succesful");
+
+                String query = searchBar.getText().toString();
+
+                Intent intent = new Intent(requireContext(), SearchActivity.class);
+                intent.putExtra("q", query);
+                startActivity(intent);
+            }
+        });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+
+        super.onCreateOptionsMenu(menu, inflater);
+
+        //inflater.inflate(R.menu.search_menu, menu);
+        MenuItem menuItem = menu.findItem(R.id.search_bar);
+        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setQueryHint("Search");
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
     }
 
     private void getBreedList()
     {
-        Call<List<BreedName>> call = jsonPlaceFolderAPI.getBreed();
+        Call<List<BreedName>> call = jsonPlaceFolderAPI.getBreed(LIMIT, page);
+
+        //Call<List<BreedName>> call = jsonPlaceFolderAPI.getBreed();
 
         call.enqueue(new Callback<List<BreedName>>() {
 
@@ -91,62 +148,34 @@ public class BreedFragment extends Fragment{
 
                 if(!response.isSuccessful())
                 {
-                    //breedName.add("Code: " + response.code());
                     return;
                 }
-                List<BreedName> items = response.body();
 
-                for(BreedName item : items) {
-                    breedName.add(new BreedName(item.getBreed(), item.getId(),
-                            item.getLifeSpan(), item.getOrigin(),item.getTemperament()));
-                    units.add(new BreedName(item.getHeight(), item.getWeight()));
-                    //adapter.notifyDataSetChanged();
+                if(response.body().size() < 2) {
+
+                    isLastPage=true;
+
+                }else{
+                    List<BreedName> items = response.body();
+
+                    for (BreedName item : items) {
+                        breedName.add(new BreedName(item.getBreed(), item.getId(),
+                                item.getLifeSpan(), item.getOrigin(), item.getTemperament()));
+                        units.add(new BreedName(item.getHeight(), item.getWeight()));
+                        imgUrl.add(new ImageURL(item.getImage().getImgUrl()));
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    page++;
+
+                    if(!isLastPage)
+                        getBreedList();
                 }
-
-                arr = new int[breedName.size()];
-
-                for (int i = 0; i < arr.length; i++)
-                    arr[i] = Integer.parseInt(breedName.get(i).getId());
-
-                getImageList(arr[i]);
             }
 
             @Override
             public void onFailure(Call<List<BreedName>> call, Throwable t) {
-                //breedName.add(t.getMessage());
-            }
-        });
-    }
-
-    private void getImageList(int j)
-    {
-        Call<List<ImageURL>> call = jsonPlaceFolderAPI.getImages(j);
-
-        call.enqueue(new Callback<List<ImageURL>>() {
-            private static final String TAG = "BreedFragment";
-            @Override
-            public void onResponse(Call<List<ImageURL>> call, Response<List<ImageURL>> response) {
-                if(!response.isSuccessful())
-                    return;
-
-                Log.d(TAG, "onResponse: Method");
-                List<ImageURL> items = response.body();
-
-                for(ImageURL item : items) {
-                    Log.d(TAG, "onResponse:items");
-                    imgUrl.add(new ImageURL(item.getImgUrl()));
-                    adapter.notifyDataSetChanged();
-                }
-
-                i++;
-                if(i<arr.length) {
-                    getImageList(arr[i]);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<ImageURL>> call, Throwable t) {
-
+                return;
             }
         });
     }

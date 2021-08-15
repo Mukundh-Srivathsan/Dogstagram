@@ -7,7 +7,8 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-@Database(entities = {Data.class}, version=1)
+
+@Database(entities = {Data.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract DataDao dataDao();
@@ -19,6 +20,7 @@ public abstract class AppDatabase extends RoomDatabase {
         {
             INSTANCE = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "Favorites")
                     .allowMainThreadQueries()
+                    .fallbackToDestructiveMigration()
                     .build();
         }
         return INSTANCE;

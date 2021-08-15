@@ -2,29 +2,13 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph"
-    app:startDestination="@id/startFragment">
+    android:id="@+id/nav_graph">
 
     <fragment
         android:id="@+id/breedFragment"
         android:name="com.example.dogstagram.fragments.BreedFragment"
         android:label="fragment_breed"
         tools:layout="@layout/fragment_breed" />
-    <fragment
-        android:id="@+id/startFragment"
-        android:name="com.example.dogstagram.fragments.StartFragment"
-        android:label="fragment_start"
-        tools:layout="@layout/fragment_start" >
-        <action
-            android:id="@+id/action_startFragment_to_breedFragment"
-            app:destination="@id/breedFragment" />
-        <action
-            android:id="@+id/action_startFragment_to_imageSearchFragment"
-            app:destination="@id/imageSearchFragment" />
-        <action
-            android:id="@+id/action_startFragment_to_favouritesFragment"
-            app:destination="@id/favouritesFragment" />
-    </fragment>
     <fragment
         android:id="@+id/imageSearchFragment"
         android:name="com.example.dogstagram.fragments.ImageSearchFragment"
@@ -36,9 +20,9 @@
     </fragment>
     <fragment
         android:id="@+id/imageAnalysisFragment"
-        android:name="com.example.dogstagram.fragments.ImageAnalysisFragment"
+        android:name="com.example.dogstagram.ImageAnalysisActivity"
         android:label="fragment_image_analysis"
-        tools:layout="@layout/fragment_image_analysis" >
+        tools:layout="@layout/activity_image_analysis" >
         <argument
             android:name="imageID"
             app:argType="string" />

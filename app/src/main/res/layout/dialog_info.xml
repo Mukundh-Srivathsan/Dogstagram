@@ -195,6 +195,19 @@
             android:text="DOWN"
             android:textSize="20sp"
             app:backgroundTint="@null" />
+
+        <ImageButton
+            android:id="@+id/shareBtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@color/teal_200"
+            android:src="@drawable/ic_baseline_cloud_upload_24"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="400dp"
+            android:layout_marginRight="150dp"
+            android:layout_marginBottom="10dp"
+            />
     </RelativeLayout>
 
     <de.hdodenhof.circleimageview.CircleImageView

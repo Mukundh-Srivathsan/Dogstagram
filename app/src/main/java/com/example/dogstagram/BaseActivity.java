@@ -1,26 +1,26 @@
 package com.example.dogstagram;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.TextView;
+import android.view.MenuItem;
+import androidx.appcompat.widget.Toolbar;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.Call;
-import retrofit2.converter.gson.GsonConverterFactory;
+import com.example.dogstagram.fragments.BreedFragment;
+import com.example.dogstagram.fragments.FavouritesFragment;
+import com.example.dogstagram.fragments.ImageSearchFragment;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+;
 
 public class BaseActivity extends AppCompatActivity {
 
     private static final String TAG = "Base";
-
 
 
     @Override
@@ -28,30 +28,41 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
         Log.d(TAG, "onCreate: Started");
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainerView, new BreedFragment())
+                .commit();
+
+        BottomNavigationView navBar = findViewById(R.id.navBar);
+        navBar.setOnNavigationItemSelectedListener(navListner);
     }
 
-  /*  @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base);
-        Log.d(TAG, "onCreate: Started");
+    private BottomNavigationView.OnNavigationItemSelectedListener navListner
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
+            Fragment selectedFragment = null;
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.thedogapi.com/v1/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+            switch (item.getItemId())
+            {
+                case R.id.breedFragment:
+                    selectedFragment = new BreedFragment();
+                    break;
 
-        jsonPlaceFolderAPI = retrofit.create(JsonPlaceFolderAPI.class);
+                case R.id.imageSearchFragment:
+                    selectedFragment = new ImageSearchFragment();
+                    break;
 
-        getBreed();
+                case R.id.favouritesFragment:
+                    selectedFragment = new FavouritesFragment();
+                    break;
+            }
 
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(this);
-        adapter = new RecylerViewAdapter(breedName);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentContainerView, selectedFragment)
+                    .commit();
 
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
-    }
-*/
+            return true;
+        }
+    };
 }

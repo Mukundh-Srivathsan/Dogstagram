@@ -2,8 +2,7 @@ package com.example.dogstagram.models;
 
 import com.google.gson.annotations.SerializedName;
 
-public class BreedName {
-
+public class SearchBreed {
     @SerializedName("name")
     private String breed;
 
@@ -19,25 +18,27 @@ public class BreedName {
     @SerializedName("temperament")
     private String temperament;
 
+    @SerializedName("reference_image_id")
+    private String imageid;
+
     @SerializedName("height")
     private Height height;
 
     @SerializedName("weight")
     private Weight weight;
 
-    @SerializedName("image")
-    private ImageURL image;
 
-    public BreedName(ImageURL image) {
-        this.image = image;
+    public SearchBreed(String imageid) {
+        this.imageid = imageid;
     }
 
-    public BreedName(Height height, Weight weight) {
+
+    public SearchBreed(Height height, Weight weight) {
         this.height = height;
         this.weight = weight;
     }
 
-    public BreedName(String mBreed, String mid, String mlifeSpan, String morigin, String mtemperament) {
+    public SearchBreed(String mBreed, String mid, String mlifeSpan, String morigin, String mtemperament) {
         breed = mBreed;
         id = mid;
         lifeSpan = mlifeSpan;
@@ -65,6 +66,10 @@ public class BreedName {
         return temperament;
     }
 
+    public String getImageid() {
+        return imageid;
+    }
+
     public Height getHeight() {
         return height;
     }
@@ -73,7 +78,4 @@ public class BreedName {
         return weight;
     }
 
-    public ImageURL getImage() {
-        return image;
-    }
 }

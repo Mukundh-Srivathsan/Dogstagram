@@ -2,7 +2,7 @@ package com.example.dogstagram.models;
 
 import com.google.gson.annotations.SerializedName;
 
-public class BreedName {
+public class Breed{
 
     @SerializedName("name")
     private String breed;
@@ -25,19 +25,13 @@ public class BreedName {
     @SerializedName("weight")
     private Weight weight;
 
-    @SerializedName("image")
-    private ImageURL image;
 
-    public BreedName(ImageURL image) {
-        this.image = image;
-    }
-
-    public BreedName(Height height, Weight weight) {
+    public Breed(Height height, Weight weight) {
         this.height = height;
         this.weight = weight;
     }
 
-    public BreedName(String mBreed, String mid, String mlifeSpan, String morigin, String mtemperament) {
+    public Breed(String mBreed, String mid, String mlifeSpan, String morigin, String mtemperament) {
         breed = mBreed;
         id = mid;
         lifeSpan = mlifeSpan;
@@ -73,7 +67,4 @@ public class BreedName {
         return weight;
     }
 
-    public ImageURL getImage() {
-        return image;
-    }
 }

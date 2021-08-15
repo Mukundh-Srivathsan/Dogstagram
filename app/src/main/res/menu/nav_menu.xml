@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/breedFragment"
+        android:icon="@drawable/ic_baseline_home_24"
+        android:title="All Breeds"
+        />
+
+    <item
+        android:id="@+id/imageSearchFragment"
+        android:icon="@drawable/ic_baseline_image_search_24"
+        android:title="Search Image"
+        />
+
+    <item
+        android:id="@+id/favouritesFragment"
+        android:icon="@drawable/ic_baseline_favorite_24"
+        android:title="Favourites"
+        />
+</menu>

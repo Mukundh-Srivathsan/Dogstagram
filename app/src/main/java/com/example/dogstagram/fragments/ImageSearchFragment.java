@@ -20,9 +20,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 
+import com.example.dogstagram.ImageAnalysisActivity;
 import com.example.dogstagram.JsonPlaceFolderAPI;
 import com.example.dogstagram.R;
 import com.example.dogstagram.models.UploadImg;
@@ -137,15 +136,21 @@ public class ImageSearchFragment extends Fragment {
 
     private File saveBitmap() {
         imageView.invalidate();
-        BitmapDrawable bitmapDrawable = (BitmapDrawable) imageView.getDrawable();
-        Bitmap bitmap = bitmapDrawable.getBitmap();
 
+        Bitmap bitmap = null;
+
+        try {
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) imageView.getDrawable();
+            bitmap = bitmapDrawable.getBitmap();
+        }catch(NullPointerException e)
+        {
+            saveBitmap();
+        }
         String fileName = String.format("%d.png", System.currentTimeMillis());
         File file = Environment.getExternalStorageDirectory();
         File savebitmap = new File(file.getAbsolutePath() + File.separator + fileName);
 
         try {
-            //savebitmap.createNewFile();
             FileOutputStream fos = new FileOutputStream(savebitmap);
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
             fos.flush();
@@ -192,13 +197,12 @@ public class ImageSearchFragment extends Fragment {
 
                     imageid = item.getId();
 
-                    NavController navController = Navigation.findNavController(view);
+                    Log.d(TAG, "Image ID: " + imageid);
 
-                    ImageSearchFragmentDirections.ActionImageSearchFragmentToImageAnalysisFragment action =
-                            ImageSearchFragmentDirections.actionImageSearchFragmentToImageAnalysisFragment(imageid);
-                    //action.setImageID(imageid);
 
-                    navController.navigate(action);
+                    Intent intent = new Intent(requireActivity(), ImageAnalysisActivity.class);
+                    intent.putExtra("image id", imageid);
+                    startActivity(intent);
                 }
 
                 @Override
@@ -211,7 +215,6 @@ public class ImageSearchFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //super method removed
         if (resultCode == RESULT_OK && requestCode == PICK_IMAGE) {
             imgURI = data.getData().toString();
             Picasso.with(imageView.getContext())

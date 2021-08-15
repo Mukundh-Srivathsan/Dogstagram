@@ -3,6 +3,7 @@ package com.example.dogstagram.adapters;
 import android.app.Dialog;
 import android.content.ClipData;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -122,6 +124,21 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.Vi
         upVote.setVisibility(View.INVISIBLE);
 
         downVote.setVisibility(View.INVISIBLE);
+
+        ImageButton share = dispItem.findViewById(R.id.shareBtn);
+
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, data.breed);
+                shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(data.imageURL));
+                shareIntent.setType("image/jpg");
+                shareIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                v.getContext().startActivity(Intent.createChooser(shareIntent, "Share Favourite"));
+            }
+        });
 
         dialogName.setText(data.breed);
 

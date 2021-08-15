@@ -14,6 +14,9 @@ public interface DataDao {
     @Query("SELECT * FROM data")
     List<Data> getAllData();
 
+    @Query("SELECT imageURL From data")
+    List<String> getImgURLs();
+
     @Insert
     void insertData(Data... data);
 

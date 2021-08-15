@@ -3,6 +3,7 @@ package com.example.dogstagram;
 import com.example.dogstagram.models.BreedName;
 import com.example.dogstagram.models.ImageAnalysis;
 import com.example.dogstagram.models.ImageURL;
+import com.example.dogstagram.models.SearchBreed;
 import com.example.dogstagram.models.UploadImg;
 import com.example.dogstagram.models.Vote;
 import com.example.dogstagram.models.VoteData;
@@ -25,14 +26,24 @@ import retrofit2.http.Query;
 public interface JsonPlaceFolderAPI {
 
     @GET("breeds")
-    Call<List<BreedName>> getBreed();
+    @Headers("x-api-key:6c94689e-0a22-4664-8127-6dc32130b4ae")
+    Call<List<BreedName>> getBreed(@Query("limit") int limit, @Query("page") int page);
+
 
     @GET("images/search")
+    @Headers("x-api-key:6c94689e-0a22-4664-8127-6dc32130b4ae")
     Call<List<ImageURL>> getImages(@Query("breed_ids") int id);
+
 
     @GET("images/{image_id}/analysis")
     @Headers("x-api-key:6c94689e-0a22-4664-8127-6dc32130b4ae")
     Call<List<ImageAnalysis>> getAnalysis(@Path("image_id") String imageid);
+
+
+    @GET("breeds/search")
+    @Headers("x-api-key:6c94689e-0a22-4664-8127-6dc32130b4ae")
+    Call<List<SearchBreed>> getSearchResults(@Query("q") String q);
+
 
     @Multipart
     @POST("images/upload")
@@ -40,7 +51,6 @@ public interface JsonPlaceFolderAPI {
     Call<UploadImg> uploadImg(@Part MultipartBody.Part photo);
 
 
-    //@Multipart
     @POST("votes")
     @Headers("x-api-key:6c94689e-0a22-4664-8127-6dc32130b4ae")
     Call<Vote> addVote(@Body VoteData voteData);

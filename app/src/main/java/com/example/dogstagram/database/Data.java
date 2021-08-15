@@ -14,7 +14,7 @@ public class Data {
     @PrimaryKey (autoGenerate = true)
     public int uid;
 
-    @ColumnInfo(name = "name")
+    @ColumnInfo(name = "breed")
     public String breed;
 
     @ColumnInfo(name = "life_span")
@@ -26,7 +26,7 @@ public class Data {
     @ColumnInfo(name = "temperament")
     public String temperament;
 
-    @ColumnInfo(name = "image URL")
+    @ColumnInfo(name = "imageURL")
     public String imageURL;
 
     @ColumnInfo(name = "height")

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.ImageAnalysisFragment">
+    tools:context=".ImageAnalysisActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -11,5 +11,5 @@
         android:layout_height="match_parent"
         android:padding="4dp"
         android:scrollbars="vertical"
-        android:background="@android:color/darker_gray"/>
+        android:background="#545454"/>
 </FrameLayout>

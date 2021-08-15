@@ -1,9 +1,11 @@
-package com.example.dogstagram.fragments;
+package com.example.dogstagram;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,7 +30,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ImageAnalysisFragment extends Fragment {
+public class ImageAnalysisActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private AnalysisAdapter adapter;
@@ -40,35 +42,15 @@ public class ImageAnalysisFragment extends Fragment {
 
     String imageid;
 
-    View v;
-
-    private static final String TAG = "ImageAnalysisFragment";
-
-    public ImageAnalysisFragment() {
-        // Required empty public constructor
-    }
+    private static final String TAG = "ImageAnalysisActivity";
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_image_analysis);
 
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_image_analysis, container, false);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull  View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        v=view;
-
-        ImageAnalysisFragmentArgs args = ImageAnalysisFragmentArgs.fromBundle(getArguments());
-        imageid= args.getImageID();
+        Intent intent = getIntent();
+        imageid = intent.getStringExtra("image id");
 
         Log.d(TAG, "image id: " + imageid);
 
@@ -80,12 +62,14 @@ public class ImageAnalysisFragment extends Fragment {
         jsonPlaceFolderAPI = retrofit.create(JsonPlaceFolderAPI.class);
 
 
-        recyclerView = v.findViewById(R.id.recyclerView);
+        recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(v.getContext());
+        layoutManager = new LinearLayoutManager(this);
 
         getAnalysis();
+
     }
+
 
     private void getAnalysis()
     {
